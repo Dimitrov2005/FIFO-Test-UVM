@@ -20,35 +20,29 @@ class Scoreboard extends uvm_scoreboard;
    task run();
       forever 
 	begin
-	   $display("+++++++ BEFRE GET ++++++");
 	   tr=new("tr");
-	   fifo.get(tr); begin
-	  $display("+++++++ AFTER GET ++++++"); /// doesnt continue after here
-	    if(tr.WREQ)begin
-	      $display("+++++++ WREQ - %d ++++++",tr.WD);
-	     pushFull(tr);end
-	   
+	   fifo.get(tr);
+	   if(tr.WREQ)begin
+	      pushFull(tr);end	   
 	   else if(tr.RREQ) begin
-	     $display("+++++++ WREQ - %d ++++++",tr.WD);
-	     popEmpt(tr);
+	      $display("+++++++ RREQ - %d ++++++",tr.RD);
+	      popEmpt(tr);
 	   end
-	      end
+	   
 	end 
    endtask // run 
 
    function void pushFull(Transaction tr);
-      if((q.size()==256) && (tr.full))begin
-	 $display("SCBF","--------FIFO IS FULL OK------");
-      end
-      else if(!((q.size()==256) && (tr.full)))  begin
-	 $display("SCBF","--------FIFO FULL ERROR------");
-	 countm++;
-      end
-      
-      else begin
-	q.push_front(tr.WD);
-	 $display("------SCB TRANS REC  %d--------",tr.WD);
-      end
+      if((q.size()!=256) && (tr.full))
+	begin	  
+	   $display("SCBF","--FIFO FULL ERROR :: full=%d | %d ------",tr.full,(q.size()==256));
+	   countm++;
+	end
+      else 
+	begin
+	   q.push_front(tr.WD);
+	   $display("------SCB TRANS REC  %d--------",tr.WD);
+	end
    endfunction // pushFull
 
    function void popEmpt(Transaction tr);
