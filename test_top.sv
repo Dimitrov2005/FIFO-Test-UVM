@@ -22,6 +22,8 @@ module top;
 	clk=0;
 	rst=1;
 	#1ps rst=0;
+	#100ps rst=1;
+	#400ps rst=0;
      end
   
  always #5ps clk=~clk;
@@ -29,7 +31,8 @@ module top;
    initial 
      begin
 	uvm_config_db #(virtual iface)::set  (null,"","viface",viface);
-        run_test("my_test");
+       // run_test("testF");
+	run_test("my_test");
      end
 
    

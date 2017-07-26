@@ -23,7 +23,7 @@ class Driver extends uvm_driver #(Transaction);
 	   viface.WREQ<=tr.WREQ;
 	   viface.RREQ<=tr.RREQ;
 	   viface.WD<=tr.WD;
-	   seq_item_port.item_done(tr);
+	   seq_item_port.item_done();
 	end //
    endtask // run_phase
 endclass // Driver

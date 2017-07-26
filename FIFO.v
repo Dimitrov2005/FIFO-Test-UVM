@@ -51,14 +51,14 @@ module fifo(WREQ,WD,f,e,RREQ,RD,rst,clkw,clkr);
      end
    
    
-   always @(posedge clkw or negedge rst)
+   always @(posedge clkw)
      begin : Write	
 	if(WREQ&&(f==0))
 	  A1<=A1+1;
 	
      end
 
-   always @(posedge clkr or negedge rst)
+   always @(posedge clkr)
      begin : Read
 	if(RREQ&&(e==0))
 	  A2<=A2+1;

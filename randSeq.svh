@@ -22,7 +22,7 @@ class randSeq extends uvm_sequence#(Transaction);
 					  tr.WREQ==1;})
 		     else `uvm_fatal("FE","Fatal Error During Randomization");
 	    end
-	  else  if(f) 
+       else if(f) 
 	     begin 
 	        assert(tr.randomize() with {tr.WREQ==0;
 					    tr.RREQ==1;})
@@ -30,7 +30,7 @@ class randSeq extends uvm_sequence#(Transaction);
 	      end
 
 	 finish_item(tr);
-	 get_response(tr);
+	
 	 e=tr.empty;
 	 f=tr.full;
 	 

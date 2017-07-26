@@ -19,14 +19,13 @@ class Monitor extends uvm_monitor;
 	   Transaction tr;
 	   @(posedge viface.clk)
 	     tr=Transaction::type_id::create("tr");
-	   tr.WREQ<=viface.WREQ;
-	   tr.RREQ<=viface.RREQ;
-	   tr.WD<=viface.WD;
-	   tr.RD<=viface.RD;
-	   tr.full<=viface.full;
-	   tr.empty<=viface.empty;
+	   tr.WREQ=viface.WREQ;
+	   tr.RREQ=viface.RREQ;
+	   tr.WD=viface.WD;
+	   tr.RD=viface.RD;
+	   tr.full=viface.full;
+	   tr.empty=viface.empty;
 	   //------ end sampling on viface clk ------// 
-	   
 	   aportMon.write(tr);
 	   end
 

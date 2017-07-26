@@ -1,0 +1,82 @@
+class Scoreboard extends uvm_scoreboard;
+
+   `uvm_component_utils(Scoreboard)
+
+     uvm_tlm_analysis_fifo#(Transaction) fifo;
+   logic [7:0] q[$:255];
+   int 	       countm=0;
+   Transaction tr;
+
+   function new(string name, uvm_component parent);
+      super.new(name,parent);
+   endfunction // new
+
+   function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+      fifo=new("fifo",this);
+   endfunction // build_phase
+
+   
+   task run();
+      forever 
+	begin
+	   tr=new("tr");
+	   fifo.get(tr);
+	   if(tr.WREQ)begin
+	      pushFull(tr);end	   
+	   else if(tr.RREQ) begin
+	      $display("+++++++ RREQ - %d ++++++",tr.RD);
+	      popEmpt(tr);
+	   end
+	end 
+   endtask // run 
+
+   function void pushFull(Transaction tr);
+   // overwrite -> clear the queue
+   if((tr.full)&&(tr.WREQ))
+	q.delete();
+      
+      check_full:assert((q.size()==256) ~^ (tr.full))
+	else 
+	  begin	  
+	     `uvm_error("SCBFM","--FIFO FULL ERROR---");
+	     countm++;
+	  end // UNMATCHED !!
+   
+	begin
+           q.push_front(tr.WD);
+	   `uvm_info("TRREC",$sformatf("------SCB TRANS REC  %h--------",tr.WD),UVM_HIGH);
+	end 
+   endfunction // pushFull
+
+   function void popEmpt(Transaction tr);
+//overRREDAD
+      
+      if((tr.empty)&&(tr.RREQ))
+	q.delete();
+  
+    check_empty:assert((q.size()==0)~^(tr.empty))
+	else
+	  begin
+	     `uvm_error("SCBEM","--------FIFO EMPTY ERROR------");
+	     countm++;   
+	  end // 
+	begin
+      check_data:assert(tr.RD==q.pop_back())
+	else 
+	  begin
+	   `uvm_error("SCBDM","--------Data Mismatch------");
+	   countm++;
+	end // else: !if(tr.RREQ)
+      end
+      
+      
+   endfunction // popEmpt
+
+   
+   function void report_phase(uvm_phase phase);
+      $display("total mismatches : %d ",countm);
+   endfunction // report_phase
+   
+   
+endclass :Scoreboard

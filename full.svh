@@ -16,6 +16,7 @@ class fullSeq extends uvm_sequence#(Transaction);
 				       tr.WREQ==1;})
 		     else `uvm_fatal("FE","Fatal Error During Randomization");
 	   finish_item(tr);
+           get_response(tr);
 	end
    endtask // body
 endclass // emptySeq

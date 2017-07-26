@@ -34,8 +34,8 @@ class my_test extends uvm_test;
   task run_phase(uvm_phase phase);
 	 
      randSeq_h=randSeq::type_id::create("randSeq_h",this);
-     //override
-     randSeq_h.num=50;
+     //override    
+     randSeq_h.num=5000;
      phase.raise_objection(this);
      randSeq_h.start(env.agent.seq);
      phase.drop_objection(this);

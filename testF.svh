@@ -1,9 +1,11 @@
-class my_test extends uvm_test;
-   `uvm_component_utils(my_test)
+class testF extends uvm_test;
+   `uvm_component_utils(testF)
+     
      Environment env;
    env_config env_cfg;
    agent_config agent_cfg;
   fullSeq fullSeq_h;
+   
    function new(string name, uvm_component parent);
       super.new(name,parent);
    endfunction // new
@@ -33,12 +35,12 @@ class my_test extends uvm_test;
 
    task run_phase(uvm_phase phase);
       
-      fullSeq_h=fullemptySeq::type_id::create("fullSeq_h",this);
+      fullSeq_h=fullSeq::type_id::create("fullSeq_h",this);
       phase.raise_objection(this);
       fullSeq_h.start(env.agent.seq);
       phase.drop_objection(this);
    endtask
 
 
- endclass:my_test // base_test
+ endclass:testF // base_test
 	    
