@@ -22,8 +22,8 @@ module top;
 	clk=0;
 	rst=1;
 	#1ps rst=0;
-	#100ps rst=1;
-	#400ps rst=0;
+	#400ps rst=1;
+	#405ps rst=0;
      end
   
  always #5ps clk=~clk;

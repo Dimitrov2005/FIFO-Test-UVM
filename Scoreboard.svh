@@ -22,10 +22,18 @@ class Scoreboard extends uvm_scoreboard;
 	begin
 	   tr=new("tr");
 	   fifo.get(tr);
-	   if(tr.WREQ)begin
+	  	$display("TR- RREQ =%b WREQ =%b ",tr.RREQ, tr.WREQ);
+	   
+	   if(tr.WREQ===1'bx)
+	     begin   
+		$display("TR- RREQ =%b WREQ =%b ",tr.RREQ, tr.WREQ);
+		$display("time to delete q");
+		q.delete();	   
+	     end
+	   else if(tr.WREQ==1)begin
 	      pushFull(tr);end	   
-	   else if(tr.RREQ) begin
-	      $display("+++++++ RREQ - %h ++++++",tr.RD);
+	   else if(tr.RREQ==1) begin
+	      `uvm_info("TRREC",$sformatf("+++++++ RREQ - %h ++++++",tr.RD),UVM_MEDIUM);
 	      popEmpt(tr);
 	   end
 	   
@@ -33,12 +41,13 @@ class Scoreboard extends uvm_scoreboard;
    endtask // run 
 
    function void pushFull(Transaction tr); 
+      if((tr.WREQ===1'bx))q.delete();
       if(tr.full==0)
 	begin 
 	   q.push_front(tr.WD);   
-	   $display("------SCB TRANS REC  %h--------",tr.WD);
+	   $display("------SCB TRANS REC  %h qsize= %d--------",tr.WD,q.size());
 	end
-     else if((q.size()!=256) && (tr.full))
+     else if((q.size()!=256) ~^ (tr.full))
 	begin	  
 	   `uvm_error("SCBF",$sformatf("--FIFO FULL ERROR :: fullFifo %b, Qsize : %d :------",tr.full,q.size()));
 	   countm++;
@@ -48,27 +57,27 @@ class Scoreboard extends uvm_scoreboard;
       if((tr.full)&&(tr.WREQ))
 	begin
 	   q[(q.size())-1]=(tr.WD);
-	   `uvm_error("SCBOW",$sformatf("--------OVER WRITE, qdatatoadd =%h ------",tr.WD));
+	   `uvm_error("SCBOW",$sformatf("--------OVERWRITE, qdatatoadd =%h ------",tr.WD));
 	end
    
    endfunction // pushFull
 
    function void popEmpt(Transaction tr);
-      if((tr.empty)&&(tr.RREQ))
+       if((tr.RREQ===1'bx))q.delete();
+     if((tr.empty)&&(tr.RREQ))
 	begin
 	   `uvm_error("SCBRWE","--------READ WHILE EMPTY ERROR ------");
 	end
       
-      i=q.pop_back();
-      
+      i=q.pop_back(); 
      if(tr.RD!=i)
 	begin
 	   `uvm_error("SCBD",$sformatf("--------Data Mismatch fifo:%h q:%h ------",tr.RD, i));
 	   countm++;
 	end
-      else  if((q.size()!=0)&&(tr.empty))
+      else  if((q.size()!=0)~^(tr.empty))
 	begin
-	   `uvm_info("SCBE","--------FIFO EMPTY ERROR------",UVM_NONE);
+	   `uvm_error("SCBE","--------FIFO EMPTY ERROR------");
 	   countm++;   
 	end
       

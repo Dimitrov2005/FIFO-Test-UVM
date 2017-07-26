@@ -4,6 +4,9 @@ class my_test extends uvm_test;
    env_config env_cfg;
    agent_config agent_cfg;
    randSeq randSeq_h;
+   fullSeq fullSeq_h;
+   emptySeq emptySeq_h;
+   
    function new(string name, uvm_component parent);
       super.new(name,parent);
    endfunction // new
@@ -34,10 +37,19 @@ class my_test extends uvm_test;
   task run_phase(uvm_phase phase);
 	 
      randSeq_h=randSeq::type_id::create("randSeq_h",this);
+fullSeq_h=fullSeq::type_id::create("randSeq_h",this);
+emptySeq_h=emptySeq::type_id::create("randSeq_h",this);
+     
      //override    
-     randSeq_h.num=5000;
+     randSeq_h.num=500;
      phase.raise_objection(this);
+     
+     fullSeq_h.start(env.agent.seq);
+     
+     emptySeq_h.start(env.agent.seq);
+ 
      randSeq_h.start(env.agent.seq);
+     
      phase.drop_objection(this);
    endtask
 

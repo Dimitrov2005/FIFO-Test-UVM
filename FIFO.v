@@ -42,25 +42,23 @@ module fifo(WREQ,WD,f,e,RREQ,RD,rst,clkw,clkr);
 	else    e=0;
      end
    
-   always@(negedge rst)
-     begin
-     	if(~rst)begin 
-	   A1 <= 9'b00000000;
-           A2 <= 9'b00000000;
-	end
+  always @(negedge rst)
+     begin	
+	if(~rst) 
+	   A1 <= 9'b00000000;	
+	  A2 <= 9'b00000000;
      end
-   
    
    always @(posedge clkw)
      begin : Write	
-	if(WREQ&&(f==0))
+	 if(WREQ&&(f==0))
 	  A1<=A1+1;
 	
      end
 
    always @(posedge clkr)
      begin : Read
-	if(RREQ&&(e==0))
+	 if(RREQ&&(e==0))
 	  A2<=A2+1;
      end		
 

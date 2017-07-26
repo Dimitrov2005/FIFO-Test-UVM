@@ -13,6 +13,7 @@ package pack;
 `include "Environment.svh"
 `include "randSeq.svh"
 `include "full.svh"
+   `include "empty.svh"
 `include "test.svh"
 `include "testF.svh"   
 endpackage:pack

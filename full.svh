@@ -10,13 +10,14 @@ class fullSeq extends uvm_sequence#(Transaction);
    task body();
       repeat(num)
 	begin
-	   tr=new("tr");
+	   tr=new("tr"); 
+	   assert(tr.randomize())
 	   start_item(tr);
 	   assert(tr.randomize() with {tr.RREQ==0;
 				       tr.WREQ==1;})
 		     else `uvm_fatal("FE","Fatal Error During Randomization");
 	   finish_item(tr);
-           get_response(tr);
+          
 	end
    endtask // body
 endclass // emptySeq
